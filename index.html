@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food@</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
+</head>
+<body>
+    <div class="w3-display-middle">
+        <input type="tel" class="mobilenum mobileNumber" id="mobileNumber" placeholder="Mobile Number">
+        <a class="invalid-text"></a>
+        <br>
+        <input type="number" class="mobilenumotp" id="mobilenumotp" placeholder="Enter OTP">
+        <div id="recaptcha-container"></div>
+        <p style="color: red;" id="otpDisplay"></p>
+        <p id="verificationStatus"></p>
+        <span class="error" style="color: orange;"></span>
+        <!-- Get otp -->
+        <button type="submit" class="btn btn-get-otp mt-2 hide btnHover" style="border: .7px solid gray;" onclick="generateAndDisplayOTP()">Get
+            OTP</button>
+        <!-- Verify otp -->
+        <button type="submit" class="btn btn-get-otp mt-2 show btnHover" style="border: .7px solid gray;"  onclick="verifyOTP()" >Verify
+            OTP</button>
+    </div>
+    <script>
+    // Function to generate OTP
+    const generateOTP = () => {
+      // Generate a random 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      return otp.toString(); // Convert to string for consistency
+  }
+  // Function to display generated OTP and verify OTP
+  const generateAndDisplayOTP = () => {
+      // Call the generateOTP function and display the result
+      const otpCode = generateOTP();
+      document.getElementById('otpDisplay').textContent = `Generated OTP: ${otpCode} `;
+  }
+  // Function to verify OTP
+  const verifyOTP = () => {
+      const enteredOTP = document.getElementById('mobilenumotp').value;
+      const generatedOTP = document.getElementById('otpDisplay').textContent.split(' ')[2];
+      if (enteredOTP === generatedOTP) {
+           window.open('Home_page.html','_blank')
+      } else {
+          document.getElementById('verificationStatus').textContent = 'Verification Failed!';
+      }
+  }
+        let otpbtn = document.querySelector('.mobilenumotp');
+        otpbtn.style.display = 'none';
+        const mobileNumberinput = document.querySelector('#mobileNumber');
+        // To hide Get OTP btn
+        let hide = document.querySelector('.hide');
+        hide.disabled = 'true'
+        // To show verify OTP  btn
+        let show = document.querySelector('.show');
+        show.style.display = 'none'
+        const mob_num = document.querySelector('.mobileNumber').addEventListener('input', function () {
+            // mobileNumber verificationCheck
+            if (document.querySelector('#mobileNumber').value.length === 10) {
+                document.querySelector('#mobileNumber').style.borderColor = "green";
+                let btn_get_otp = document.querySelector('.btn-get-otp');
+                let hide = document.querySelector('.hide');
+                hide.disabled = ''
+                btn_get_otp.addEventListener('click', function () {
+                    otpbtn.style.display = 'block';
+                    hide.style.display = 'none'
+                    show.style.display = 'block'
+                    mobileNumberinput.disabled = true;
+                })
+            }
+            else {
+                otpbtn.style.display = 'none';
+                document.querySelector('.invalid-text').innerHTML = '<img width="20" height="20" src="https://img.icons8.com/color/48/delete-sign--v1.png" alt="delete-sign--v1"/>';
+                document.querySelector('#mobileNumber').style.borderColor = "red";
+                hide.disabled = 'true'
+                setTimeout(() => {
+                    document.querySelector('.invalid-text').innerHTML = '';
+                }, 2000);
+            }
+        })
+    </script>
+</body>
+</html>

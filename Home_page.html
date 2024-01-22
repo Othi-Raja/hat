@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food List</title>
+  <!-- Link to Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="header">
+      <input type="text" id="searchBox" class="form-control" placeholder="Search..."  >
+    </div>
+    <div id="foodList" class="container">
+      <!-- Food items will be dynamically added here -->
+    </div>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle" >Modal title</h5>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+          </div>
+          <div class="modal-body">
+          </div>
+          <button class="btn paymentBtn" id="paymentBtn" >Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+   <center> <p style="font-size: 10px;">&copy; 2024 Your FoodHat Shop. All rights reserved. | Designed by Your Othiraja|</p></center>>
+</footer>
+  <script>// Function to update the total price
+    function updateTotalPrice(foodPrice, count) {
+      const totalPrice = foodPrice * count;
+      document.getElementById('foodCount').textContent = foodCount;
+      document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+    }
+    var instance = new Razorpay({ key_id: 'rzp_live_eH5i82RV0SJYKb', key_secret: '2kLSHEs8aqS36zBI2b2p3z5i' })
+instance.qrCode.all()
+    // Function to open the modal
+    function openModal(name, price) {
+      // Get the modal elements
+      const modalTitle = document.querySelector('#exampleModalCenter .modal-title');
+      const modalBody = document.querySelector('#exampleModalCenter .modal-body');
+      // Initialize the count of food
+      let foodCount = 1;
+      // Set the modal title and body content based on the selected food item
+      modalTitle.textContent = name;
+      modalBody.innerHTML = `
+        <!--<p>Food Name: ${name}</p>-->
+        <p>Price: ₹${price}</p><hr>
+        <p>Count: <span id="foodCount">${foodCount}</span></p>
+        <div class="ml-auto">
+          <p>Total Price: ₹<span id="totalPrice">${price}</span></p>
+          <div style="float: right;">
+            <button class="btn btn-primary" onclick="decrementCount()">-</button>
+            <button class="btn btn-primary" onclick="incrementCount()">+</button>
+          </div>
+        </div>
+      `;
+      // Show the modal
+      $('#exampleModalCenter').modal('show');
+      // Function to increment the count of food and update total price
+      window.incrementCount = function () {
+        foodCount++;
+        updateTotalPrice(price, foodCount);
+      };
+      // Function to decrement the count of food and update total price
+      window.decrementCount = function () {
+        if (foodCount > 1) {
+          foodCount--;
+          updateTotalPrice(price, foodCount);
+        }
+      };
+      // Function to update the total price
+      function updateTotalPrice(foodPrice, count) {
+        const totalPrice = foodPrice * count;
+        document.getElementById('foodCount').textContent = foodCount;
+        document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+      }
+      // Add event listener to the payment button
+      document.querySelector('#paymentBtn').addEventListener('click', function () {
+        makePayment(name, price, foodCount);
+      });
+    }
+    // Payment gateway function
+    function makePayment(name, price, foodCount) {
+      // Replace with your Razorpay API key
+      const apiKey = 'rzp_live_eH5i82RV0SJYKb';
+      // Calculate total amount (in paise)
+      const totalAmount = price * foodCount * 100;
+      // Create a Razorpay options object
+      const options = {
+        key: apiKey,
+        amount: totalAmount,
+        currency: 'INR',
+        method: 'upi',
+        name: 'Food Hat@',
+        description: 'Product/Service Description',
+        image: 'your_logo_url.png', // Replace with your company logo URL
+        handler: function (response) {
+          // Handle the success callback here
+          alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+        },
+        prefill: {
+          name: 'Othiraja',
+          email: 'customer@example.com',
+          contact: '1234567890',
+        },
+        theme: {
+          color: '#3399cc', // Replace with your desired color
+        },
+        modal: {
+          // Enable UPI and Google Pay
+          escape: false,
+          UPI: {
+            provider: 'gpay',
+            callback_url: 'https://your-callback-url.com/upi-callback',
+          },
+          gpay: {
+            callback_url: 'https://your-callback-url.com/gpay-callback',
+          },
+        },
+      };
+      // Create a new instance of Razorpay
+      const rzp = new Razorpay(options);
+      // Open the Razorpay checkout form
+      rzp.open();
+    }
+  </script>
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+  <!-- Link to Bootstrap JS and Popper.js (optional) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
